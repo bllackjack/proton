@@ -63,7 +63,8 @@ domain logic is provable before any call infrastructure exists.
 - Day lifecycle: open a day plan, commit tasks to it, close the day with statuses.
 - Automatic carry-over of unfinished tasks into the next day's proposed plan.
 - Standup digest generation (Yesterday/Today/Blockers) as plain text and JSON.
-- Persistent local store (SQLite) with full status history per task.
+- Persistent store (Neon Postgres free tier via Drizzle ORM; embedded
+  PGlite for tests and offline dev) with full status history per task.
 - CLI: `proton add`, `proton plan`, `proton commit`, `proton checkin`,
   `proton standup`, `proton log`.
 
@@ -150,9 +151,9 @@ accidentally design Phases 1–4 around them — or against them.
 
 ```
 ┌────────────┐     ┌──────────────────────┐     ┌─────────────┐
-│ Scheduler  │────▶│  Core (task engine,  │◀───▶│   SQLite    │
-│ (cron)     │     │  day lifecycle,      │     └─────────────┘
-└────────────┘     │  digest generator)   │
+│ Scheduler  │────▶│  Core (task engine,  │◀───▶│  Postgres   │
+│ (cron)     │     │  day lifecycle,      │     │ Neon/PGlite │
+└────────────┘     │  digest generator)   │     └─────────────┘
                    └─────────┬────────────┘
         ┌────────────────────┼────────────────────┐
         ▼                    ▼                    ▼
@@ -167,8 +168,11 @@ Guiding rules:
    shippable.
 2. **Every interaction is replayable.** Calls, check-ins, and edits append to a
    history; digests are derived, never hand-maintained.
-3. **Single-user, local-first.** SQLite on disk; no accounts, no cloud database
-   until a phase explicitly demands one.
+3. **Single-user, free-tier-first.** Decided 2026-06-13: Neon Postgres
+   (free tier, auto-wakes on connection) as the primary store, accessed via
+   Drizzle ORM; embedded PGlite for tests and offline dev so nothing needs
+   the network locally. No accounts in the app itself, and no paid
+   infrastructure until a phase explicitly demands it.
 
 ---
 
@@ -186,6 +190,6 @@ Guiding rules:
 - Language/runtime: decided 2026-06-13 — Node.js/TypeScript. Next.js (App
   Router) hosts a web UI for tasks and conversations (deployable to Vercel
   later); the core stays a plain TypeScript module under `src/core/`.
-- Vercel + SQLite tension: serverless has no persistent disk. Local-first
-  SQLite stands for now; revisit (Turso/libSQL or hosted Postgres) when the
-  UI actually deploys.
+- ~~Vercel + SQLite tension~~ resolved 2026-06-13 by moving to Neon
+  Postgres: serverless UI and the future scheduler host both reach the same
+  hosted database.

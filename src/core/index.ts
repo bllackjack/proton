@@ -17,6 +17,34 @@ export type TaskStatus =
   | "blocked"
   | "dropped";
 
+/**
+ * queued → committed → (done | partial | blocked | dropped).
+ * partial/blocked re-enter the queue as carry-overs (docs/SPEC.md §2);
+ * done and dropped are terminal.
+ */
+const TRANSITIONS: Record<TaskStatus, readonly TaskStatus[]> = {
+  queued: ["committed", "dropped"],
+  committed: ["done", "partial", "blocked", "dropped"],
+  partial: ["queued", "committed"],
+  blocked: ["queued", "committed"],
+  done: [],
+  dropped: [],
+};
+
+export function canTransition(from: TaskStatus, to: TaskStatus): boolean {
+  return TRANSITIONS[from].includes(to);
+}
+
+export class InvalidTransitionError extends Error {
+  constructor(
+    public readonly from: TaskStatus,
+    public readonly to: TaskStatus,
+  ) {
+    super(`invalid task status transition: ${from} → ${to}`);
+    this.name = "InvalidTransitionError";
+  }
+}
+
 /** Statuses that end a task's day; `partial` and `blocked` carry over. */
 export function carriesOver(status: TaskStatus): boolean {
   return status === "partial" || status === "blocked";

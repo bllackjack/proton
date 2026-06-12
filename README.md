@@ -13,7 +13,10 @@ log.
 
 Node.js / TypeScript. Next.js (App Router) provides the web UI for tasks and
 conversations; the domain logic lives in `src/core/` as plain TypeScript with
-no framework imports. SQLite for local persistence (M1).
+no framework imports. Neon Postgres (free tier) via Drizzle ORM is the
+primary store; tests and offline dev run on embedded PGlite, so no network
+or signup is needed locally. Set `DATABASE_URL` in `.env` (see
+`.env.example`) to point at Neon; migrations in `drizzle/` apply at startup.
 
 ## Develop
 
