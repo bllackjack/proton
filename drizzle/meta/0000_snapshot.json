@@ -47,12 +47,8 @@
           "name": "task_status_history_task_id_tasks_id_fk",
           "tableFrom": "task_status_history",
           "tableTo": "tasks",
-          "columnsFrom": [
-            "task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["task_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -129,24 +125,12 @@
     "public.priority": {
       "name": "priority",
       "schema": "public",
-      "values": [
-        "P0",
-        "P1",
-        "P2",
-        "P3"
-      ]
+      "values": ["P0", "P1", "P2", "P3"]
     },
     "public.task_status": {
       "name": "task_status",
       "schema": "public",
-      "values": [
-        "queued",
-        "committed",
-        "done",
-        "partial",
-        "blocked",
-        "dropped"
-      ]
+      "values": ["queued", "committed", "done", "partial", "blocked", "dropped"]
     }
   },
   "schemas": {},

@@ -71,9 +71,7 @@ export async function setStatus(
       .set({ status: to, updatedAt: new Date() })
       .where(eq(tasks.id, id))
       .returning();
-    await tx
-      .insert(taskStatusHistory)
-      .values({ taskId: id, status: to, note });
+    await tx.insert(taskStatusHistory).values({ taskId: id, status: to, note });
     return updated;
   });
 }
