@@ -8,6 +8,13 @@
       "when": 1781292337439,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781322798290,
+      "tag": "0001_unique_shinko_yamashiro",
+      "breakpoints": true
     }
   ]
 }
